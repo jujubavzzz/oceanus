@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>OCEANUS - Controle</title>
+
+    <link
+        rel="stylesheet"
+        href="estilorobo.css"
+    >
+
+    <!-- THREE.JS -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three":
+                "https://unpkg.com/three@0.178.0/build/three.module.js",
+
+            "three/addons/":
+                "https://unpkg.com/three@0.178.0/examples/jsm/"
+        }
+    }
+    </script>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================================
+         CENA 3D
+    ================================================== -->
+
+    <div id="canvas-container"></div>
+
+
+
+    <!-- ==================================================
+         LOADING
+    ================================================== -->
+
+    <div id="loading-screen">
+
+        <div class="spinner"></div>
+
+        <div id="progress-text">
+            Carregando OCEANUS... 0%
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         TOPO
+    ================================================== -->
+
+    <div id="top-bar">
+
+        <div class="brand">
+
+            <div class="logo">
+                OCEANUS
+            </div>
+
+            <div class="subtitle">
+                AUTONOMOUS MARINE COLLECTOR
+            </div>
+
+        </div>
+
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            ONLINE
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         BOTÕES DE CENÁRIO
+    ================================================== -->
+
+    <div id="mode-buttons">
+
+        <button
+            id="ocean-button"
+            class="mode-button"
+        >
+            🌊 OCEANO
+        </button>
+
+
+        <button
+            id="monitor-button"
+            class="mode-button active"
+        >
+            ⚙ MONITORAMENTO
+        </button>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         INSTRUÇÕES
+    ================================================== -->
+
+    <div
+        id="monitor-instructions"
+        class="instructions"
+    >
+
+        <div class="instruction">
+
+            <span>W / ↑</span>
+
+            <span>FRENTE</span>
+
+        </div>
+
+
+        <div class="instruction">
+
+            <span>S / ↓</span>
+
+            <span>RÉ</span>
+
+        </div>
+
+
+        <div class="instruction">
+
+            <span>A / ←</span>
+
+            <span>ESQUERDA</span>
+
+        </div>
+
+
+        <div class="instruction">
+
+            <span>D / →</span>
+
+            <span>DIREITA</span>
+
+        </div>
+
+
+        <div class="instruction">
+
+            <span>Q</span>
+
+            <span>SUBIR</span>
+
+        </div>
+
+
+        <div class="instruction">
+
+            <span>E</span>
+
+            <span>DESCER</span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         VELOCIDADE
+    ================================================== -->
+
+    <div
+        id="speed-panel"
+        class="hud-panel"
+    >
+
+        <div class="panel-title">
+
+            <span class="panel-dot"></span>
+
+            VELOCIDADE
+
+        </div>
+
+
+        <div class="speed-line">
+
+            <input
+                id="speed"
+                type="range"
+                min="10"
+                max="100"
+                value="86"
+            >
+
+            <span id="speedValue">
+                86%
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         TELEMETRIA
+    ================================================== -->
+
+    <div
+        id="telemetry"
+        class="hud-panel"
+    >
+
+        <div class="panel-title">
+
+            <span class="panel-dot"></span>
+
+            TELEMETRIA
+
+        </div>
+
+
+        <div class="telemetry-row">
+
+            <span>POS X</span>
+
+            <strong id="posX">
+                0.00
+            </strong>
+
+        </div>
+
+
+        <div class="telemetry-row">
+
+            <span>POS Y</span>
+
+            <strong id="posY">
+                0.00
+            </strong>
+
+        </div>
+
+
+        <div class="telemetry-row">
+
+            <span>POS Z</span>
+
+            <strong id="posZ">
+                0.00
+            </strong>
+
+        </div>
+
+
+        <div class="telemetry-row">
+
+            <span>VELOCIDADE</span>
+
+            <strong id="telemetrySpeed">
+                86%
+            </strong>
+
+        </div>
+
+
+        <div class="telemetry-row">
+
+            <span>STATUS</span>
+
+            <strong id="robotStatus">
+                PARADO
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         INFORMAÇÕES DO OCEANO
+    ================================================== -->
+
+    <div
+        id="ocean-info"
+        class="ocean-ui hidden"
+    >
+
+        <div class="ocean-title">
+            CENÁRIO DE ÁGUA
+        </div>
+
+
+        <div>
+            WASD para controlar o robô
+        </div>
+
+
+        <div>
+            Q / E para subir e descer
+        </div>
+
+
+        <div>
+            🗑️ Aproxime-se do lixo para coletá-lo
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================================
+         JAVASCRIPT
+    ================================================== -->
+
+    <script
+        type="module"
+        src="app.js"
+    ></script>
+
+
+</body>
+
+</html>

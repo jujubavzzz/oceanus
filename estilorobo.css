@@ -1,0 +1,833 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+
+    margin: 0;
+    padding: 0;
+}
+
+
+html,
+body {
+
+    width: 100%;
+    height: 100%;
+
+}
+
+
+body {
+
+    overflow: hidden;
+
+    background: #020406;
+
+    color: #ffffff;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+}
+
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+#canvas-container {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+#loading-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: #020406;
+
+    z-index: 999;
+
+    transition:
+        opacity .5s ease;
+
+}
+
+
+.spinner {
+
+    width: 48px;
+    height: 48px;
+
+    border:
+
+        3px solid
+        rgba(255,255,255,.1);
+
+    border-top-color:
+        #3ca8ff;
+
+    border-radius: 50%;
+
+    animation:
+        spin 1s linear infinite;
+
+    margin-bottom: 18px;
+
+}
+
+
+@keyframes spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+#progress-text {
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+    color: #71808a;
+
+    text-transform: uppercase;
+
+}
+
+
+/* =========================================================
+   TOPO
+========================================================= */
+
+#top-bar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 90px;
+
+    padding:
+        17px 28px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    z-index: 20;
+
+    pointer-events: none;
+
+    background:
+
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,.78),
+            transparent
+        );
+
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.brand {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.logo {
+
+    font-size: 24px;
+
+    font-weight: 700;
+
+    letter-spacing: 7px;
+
+    color: #f3f6f8;
+
+}
+
+
+.subtitle {
+
+    margin-top: 6px;
+
+    font-size: 8px;
+
+    letter-spacing: 3px;
+
+    color: #68747d;
+
+}
+
+
+/* =========================================================
+   ONLINE
+========================================================= */
+
+.status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    color: #cbd2d6;
+
+}
+
+
+.status-dot {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #35ff72;
+
+    box-shadow:
+
+        0 0 6px #35ff72,
+
+        0 0 15px
+        rgba(53,255,114,.5);
+
+}
+
+
+/* =========================================================
+   BOTÕES OCEANO / MONITORAMENTO
+========================================================= */
+
+#mode-buttons {
+
+    position: fixed;
+
+    top: 25px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+
+    gap: 8px;
+
+    z-index: 50;
+
+}
+
+
+/* botão */
+
+.mode-button {
+
+    height: 38px;
+
+    padding:
+        0 18px;
+
+    border-radius: 7px;
+
+    border:
+
+        1px solid
+        rgba(255,255,255,.14);
+
+    background:
+
+        rgba(5,10,14,.85);
+
+    color: #74818a;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+    backdrop-filter:
+        blur(12px);
+
+    transition:
+        .2s ease;
+
+}
+
+
+/* hover */
+
+.mode-button:hover {
+
+    color: #ffffff;
+
+    border-color:
+        rgba(70,170,255,.5);
+
+    background:
+        rgba(12,24,33,.95);
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* ativo */
+
+.mode-button.active {
+
+    color: #ffffff;
+
+    border-color:
+        rgba(70,170,255,.55);
+
+    background:
+
+        rgba(15,39,56,.95);
+
+    box-shadow:
+
+        0 0 20px
+        rgba(50,150,255,.15);
+
+}
+
+
+/* =========================================================
+   INSTRUÇÕES
+========================================================= */
+
+#monitor-instructions {
+
+    position: fixed;
+
+    top: 102px;
+
+    right: 30px;
+
+    width: 165px;
+
+    z-index: 20;
+
+    padding: 8px 0;
+
+}
+
+
+.instruction {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 5px 0;
+
+    font-family: monospace;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.instruction span:first-child {
+
+    color: #6d7b84;
+
+}
+
+
+.instruction span:last-child {
+
+    color: #515c64;
+
+}
+
+
+/* =========================================================
+   PAINEL HUD
+========================================================= */
+
+.hud-panel {
+
+    position: fixed;
+
+    z-index: 20;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(10,15,19,.95),
+            rgba(3,7,10,.91)
+        );
+
+    border:
+
+        1px solid
+        rgba(255,255,255,.12);
+
+    box-shadow:
+
+        0 15px 40px
+        rgba(0,0,0,.4);
+
+    backdrop-filter:
+        blur(14px);
+
+    -webkit-backdrop-filter:
+        blur(14px);
+
+}
+
+
+/* =========================================================
+   TÍTULO DOS PAINÉIS
+========================================================= */
+
+.panel-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 15px;
+
+    color: #78858e;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 2.5px;
+
+}
+
+
+.panel-dot {
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #3ba5ff;
+
+    box-shadow:
+
+        0 0 8px
+        rgba(59,165,255,.8);
+
+}
+
+
+/* =========================================================
+   VELOCIDADE
+========================================================= */
+
+#speed-panel {
+
+    left: 25px;
+
+    bottom: 28px;
+
+    width: 285px;
+
+    padding:
+        17px 18px;
+
+    border-radius: 9px;
+
+}
+
+
+.speed-line {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+/* =========================================================
+   SLIDER
+========================================================= */
+
+#speed {
+
+    flex: 1;
+
+    height: 4px;
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    border-radius: 20px;
+
+    outline: none;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            to right,
+            #ffffff 0%,
+            #ffffff 86%,
+            #30383e 86%,
+            #30383e 100%
+        );
+
+}
+
+
+/* bolinha Chrome */
+
+#speed::-webkit-slider-thumb {
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    width: 15px;
+    height: 15px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    border:
+        2px solid
+        #dce2e5;
+
+    box-shadow:
+
+        0 0 10px
+        rgba(255,255,255,.3);
+
+}
+
+
+/* Firefox */
+
+#speed::-moz-range-thumb {
+
+    width: 15px;
+    height: 15px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    border:
+        2px solid
+        #dce2e5;
+
+}
+
+
+/* porcentagem */
+
+#speedValue {
+
+    min-width: 35px;
+
+    text-align: right;
+
+    color: #e4e9ec;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   TELEMETRIA
+========================================================= */
+
+#telemetry {
+
+    right: 30px;
+
+    bottom: 28px;
+
+    width: 205px;
+
+    padding:
+        17px 18px;
+
+    border-radius: 9px;
+
+}
+
+
+.telemetry-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 6px 0;
+
+    border-bottom:
+
+        1px solid
+        rgba(255,255,255,.035);
+
+    font-family: monospace;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.telemetry-row:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.telemetry-row span {
+
+    color: #59656d;
+
+}
+
+
+.telemetry-row strong {
+
+    color: #dfe5e8;
+
+    font-weight: 600;
+
+}
+
+
+#robotStatus {
+
+    color: #65b9ff !important;
+
+}
+
+
+/* =========================================================
+   INFORMAÇÃO DO OCEANO
+========================================================= */
+
+.ocean-ui {
+
+    position: fixed;
+
+    left: 25px;
+
+    bottom: 28px;
+
+    z-index: 20;
+
+    min-width: 285px;
+
+    padding:
+        17px 19px;
+
+    border-radius: 9px;
+
+    background:
+        rgba(3,10,15,.84);
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    box-shadow:
+
+        0 15px 40px
+        rgba(0,0,0,.35);
+
+    backdrop-filter:
+        blur(13px);
+
+    color: #87949d;
+
+    font-size: 10px;
+
+    line-height: 1.9;
+
+}
+
+
+.ocean-title {
+
+    margin-bottom: 7px;
+
+    color: #ffffff;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+}
+
+
+/* =========================================================
+   HIDDEN
+========================================================= */
+
+.hidden {
+
+    opacity: 0 !important;
+
+    pointer-events: none !important;
+
+}
+
+
+/* =========================================================
+   LINHA INFERIOR
+========================================================= */
+
+body::after {
+
+    content: "";
+
+    position: fixed;
+
+    left: 0;
+    right: 0;
+
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(50,150,220,.35),
+            transparent
+        );
+
+    z-index: 30;
+
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 800px) {
+
+    #mode-buttons {
+
+        top: 70px;
+
+    }
+
+
+    #monitor-instructions {
+
+        right: 15px;
+
+    }
+
+
+    #speed-panel {
+
+        left: 15px;
+
+        bottom: 15px;
+
+        width: 230px;
+
+    }
+
+
+    #telemetry {
+
+        right: 15px;
+
+        bottom: 15px;
+
+        width: 180px;
+
+    }
+
+}
