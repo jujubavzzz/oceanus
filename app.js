@@ -20,6 +20,7 @@ const MODEL_PATH = 'robo.glb';
 
 let water;
 let sun;
+let sky;
 
 let robotModel = null;
 
@@ -87,7 +88,95 @@ const robotStatus =
 // MODO ATUAL
 // ======================================================
 
-let currentMode = 'monitor';
+let currentMode = 'ocean';
+
+
+// ======================================================
+// CENA
+// ======================================================
+
+const container =
+    document.getElementById('canvas-container');
+
+const scene =
+    new THREE.Scene();
+
+
+// ======================================================
+// CÂMERA
+// ======================================================
+
+const camera =
+    new THREE.PerspectiveCamera(
+        55,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        2000
+    );
+
+camera.position.set(
+    0,
+    3,
+    6
+);
+
+
+// ======================================================
+// RENDERIZADOR
+// ======================================================
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: 'high-performance'
+    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.setPixelRatio(
+    Math.min(
+        window.devicePixelRatio,
+        2
+    )
+);
+
+renderer.toneMapping =
+    THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure =
+    1.0;
+
+renderer.shadowMap.enabled =
+    true;
+
+container.appendChild(
+    renderer.domElement
+);
+
+
+// ======================================================
+// ORBIT CONTROLS
+// ======================================================
+
+const controls =
+    new OrbitControls(
+        camera,
+        renderer.domElement
+    );
+
+controls.enableDamping = true;
+
+controls.dampingFactor = 0.08;
+
+controls.maxPolarAngle =
+    Math.PI / 2 - 0.01;
+
+controls.minDistance = 2;
+
+controls.maxDistance = 30;
 
 
 // ======================================================
@@ -99,63 +188,124 @@ function setMonitorMode() {
     currentMode = 'monitor';
 
 
-    // Ativa botão monitoramento
+    // ==========================================
+    // BOTÕES
+    // ==========================================
+
     if (monitorButton) {
-
-        monitorButton.classList.add(
-            'active'
-        );
-
+        monitorButton.classList.add('active');
     }
 
-
-    // Desativa botão oceano
     if (oceanButton) {
-
-        oceanButton.classList.remove(
-            'active'
-        );
-
+        oceanButton.classList.remove('active');
     }
 
 
-    // Mostra instruções
+    // ==========================================
+    // INTERFACE
+    // ==========================================
+
     if (monitorInstructions) {
-
-        monitorInstructions.classList.remove(
-            'hidden'
-        );
-
+        monitorInstructions.classList.remove('hidden');
     }
 
-
-    // Mostra painel de velocidade
     if (speedPanel) {
-
-        speedPanel.classList.remove(
-            'hidden'
-        );
-
+        speedPanel.classList.remove('hidden');
     }
 
-
-    // Mostra telemetria
     if (telemetry) {
+        telemetry.classList.remove('hidden');
+    }
 
-        telemetry.classList.remove(
-            'hidden'
-        );
-
+    if (oceanInfo) {
+        oceanInfo.classList.add('hidden');
     }
 
 
-    // Esconde informações do oceano
-    if (oceanInfo) {
+    // ==========================================
+    // ESCONDE O CENÁRIO DO OCEANO
+    // ==========================================
 
-        oceanInfo.classList.add(
-            'hidden'
+    if (water) {
+        water.visible = false;
+    }
+
+    if (sky) {
+        sky.visible = false;
+    }
+
+    trashItems.forEach((trash) => {
+        trash.visible = false;
+    });
+
+
+    // ==========================================
+    // FUNDO PRETO
+    // ==========================================
+
+    scene.background =
+        new THREE.Color(0x000000);
+
+
+    // ==========================================
+    // CENTRALIZA O ROBÔ
+    // ==========================================
+
+    if (robotModel) {
+
+        robotModel.position.set(
+            0,
+            0,
+            0
         );
 
+        robotModel.rotation.set(
+            0,
+            0,
+            0
+        );
+
+
+        // Calcula o tamanho do robô
+        const box =
+            new THREE.Box3()
+                .setFromObject(robotModel);
+
+        const size =
+            new THREE.Vector3();
+
+        box.getSize(size);
+
+
+        const center =
+            new THREE.Vector3();
+
+        box.getCenter(center);
+
+
+        // ==========================================
+        // POSIÇÃO DA CÂMERA
+        // ==========================================
+
+        camera.position.set(
+            center.x,
+            center.y + size.y * 0.2,
+            center.z +
+                Math.max(
+                    size.x,
+                    size.y,
+                    size.z
+                ) * 2.2
+        );
+
+
+        controls.target.set(
+            center.x,
+            center.y,
+            center.z
+        );
+
+        controls.update();
     }
 
 
@@ -175,62 +325,69 @@ function setOceanMode() {
     currentMode = 'ocean';
 
 
-    // Ativa botão oceano
+    // ==========================================
+    // BOTÕES
+    // ==========================================
+
     if (oceanButton) {
-
-        oceanButton.classList.add(
-            'active'
-        );
-
+        oceanButton.classList.add('active');
     }
 
-
-    // Desativa botão monitoramento
     if (monitorButton) {
-
-        monitorButton.classList.remove(
-            'active'
-        );
-
+        monitorButton.classList.remove('active');
     }
 
 
-    // Esconde instruções
+    // ==========================================
+    // INTERFACE
+    // ==========================================
+
     if (monitorInstructions) {
-
-        monitorInstructions.classList.add(
-            'hidden'
-        );
-
+        monitorInstructions.classList.add('hidden');
     }
 
-
-    // Esconde painel de velocidade
     if (speedPanel) {
-
-        speedPanel.classList.add(
-            'hidden'
-        );
-
+        speedPanel.classList.add('hidden');
     }
 
-
-    // Esconde telemetria
     if (telemetry) {
+        telemetry.classList.add('hidden');
+    }
 
-        telemetry.classList.add(
-            'hidden'
-        );
-
+    if (oceanInfo) {
+        oceanInfo.classList.remove('hidden');
     }
 
 
-    // Mostra informações do oceano
-    if (oceanInfo) {
+    // ==========================================
+    // MOSTRA O CENÁRIO DO OCEANO
+    // ==========================================
 
-        oceanInfo.classList.remove(
-            'hidden'
-        );
+    if (water) {
+        water.visible = true;
+    }
+
+    if (sky) {
+        sky.visible = true;
+    }
+
+    trashItems.forEach((trash) => {
+        trash.visible = true;
+    });
+
+
+    // Remove o fundo preto
+    scene.background = null;
+
+
+    // ==========================================
+    // DEVOLVE O ROBÔ PARA A ÁGUA
+    // ==========================================
+
+    if (robotModel) {
+
+        robotModel.position.y =
+            baseWaterY;
 
     }
 
@@ -288,12 +445,13 @@ if (speedSlider) {
                 Number(speedSlider.value);
 
 
-            // Atualiza velocidade do robô
+            // Atualiza velocidade
             moveSpeed =
                 value / 1000;
 
 
             // Atualiza texto
+
             if (speedValue) {
 
                 speedValue.innerText =
@@ -310,7 +468,8 @@ if (speedSlider) {
             }
 
 
-            // Atualiza visual do slider
+            // Atualiza aparência do slider
+
             speedSlider.style.background =
                 `linear-gradient(
                     to right,
@@ -327,92 +486,6 @@ if (speedSlider) {
 
 
 // ======================================================
-// CENA
-// ======================================================
-
-const container =
-    document.getElementById(
-        'canvas-container'
-    );
-
-
-const scene =
-    new THREE.Scene();
-
-
-// ======================================================
-// CÂMERA
-// ======================================================
-
-const camera =
-    new THREE.PerspectiveCamera(
-
-        55,
-
-        window.innerWidth /
-        window.innerHeight,
-
-        0.1,
-
-        2000
-
-    );
-
-
-camera.position.set(
-    0,
-    3,
-    6
-);
-
-
-// ======================================================
-// RENDERIZADOR
-// ======================================================
-
-const renderer =
-    new THREE.WebGLRenderer({
-
-        antialias: true,
-
-        powerPreference:
-            'high-performance'
-
-    });
-
-
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
-
-
-renderer.setPixelRatio(
-    Math.min(
-        window.devicePixelRatio,
-        2
-    )
-);
-
-
-renderer.toneMapping =
-    THREE.ACESFilmicToneMapping;
-
-
-renderer.toneMappingExposure =
-    1.0;
-
-
-renderer.shadowMap.enabled =
-    true;
-
-
-container.appendChild(
-    renderer.domElement
-);
-
-
-// ======================================================
 // ILUMINAÇÃO
 // ======================================================
 
@@ -421,7 +494,6 @@ const ambientLight =
         0xffffff,
         2.0
     );
-
 
 scene.add(
     ambientLight
@@ -434,17 +506,14 @@ const mainLight =
         3.0
     );
 
-
 mainLight.position.set(
     20,
     40,
     20
 );
 
-
 mainLight.castShadow =
     true;
-
 
 scene.add(
     mainLight
@@ -457,13 +526,11 @@ const fillLight =
         1.2
     );
 
-
 fillLight.position.set(
     -20,
     20,
     -20
 );
-
 
 scene.add(
     fillLight
@@ -478,14 +545,12 @@ sun =
     new THREE.Vector3();
 
 
-const sky =
+sky =
     new Sky();
-
 
 sky.scale.setScalar(
     10000
 );
-
 
 scene.add(
     sky
@@ -766,6 +831,7 @@ function createTrashInWater(
 
 
 // Cria lixo
+
 createTrashInWater(
     50
 );
@@ -822,6 +888,10 @@ loader.load(
     MODEL_PATH,
 
 
+    // ==========================================
+    // SUCESSO
+    // ==========================================
+
     (gltf) => {
 
         robotModel =
@@ -829,6 +899,7 @@ loader.load(
 
 
         // Calcula tamanho
+
         const box =
             new THREE.Box3()
                 .setFromObject(
@@ -846,6 +917,7 @@ loader.load(
 
 
         // Altura na água
+
         baseWaterY =
             -minY +
             (sizeY * 0.15);
@@ -863,6 +935,7 @@ loader.load(
 
 
         // Configura malhas
+
         robotModel.traverse(
             (child) => {
 
@@ -898,7 +971,10 @@ loader.load(
         );
 
 
-        // Câmera inicial
+        // ==========================================
+        // CÂMERA INICIAL
+        // ==========================================
+
         const maxDim =
             Math.max(
 
@@ -929,7 +1005,13 @@ loader.load(
         );
 
 
-        // Finaliza loading
+        controls.update();
+
+
+        // ==========================================
+        // FINALIZA LOADING
+        // ==========================================
+
         if (
             loadingScreen
         ) {
@@ -953,10 +1035,18 @@ loader.load(
 
         }
 
+
+        // Garante que o modo inicial seja Oceano
+
+        setOceanMode();
+
     },
 
 
-    // Progresso
+    // ==========================================
+    // PROGRESSO
+    // ==========================================
+
     (xhr) => {
 
         if (
@@ -986,7 +1076,10 @@ loader.load(
     },
 
 
-    // Erro
+    // ==========================================
+    // ERRO
+    // ==========================================
+
     (error) => {
 
         console.error(
@@ -1014,40 +1107,6 @@ loader.load(
     }
 
 );
-
-
-// ======================================================
-// ORBIT CONTROLS
-// ======================================================
-
-const controls =
-    new OrbitControls(
-
-        camera,
-
-        renderer.domElement
-
-    );
-
-
-controls.enableDamping =
-    true;
-
-
-controls.dampingFactor =
-    0.08;
-
-
-controls.maxPolarAngle =
-    Math.PI / 2 - 0.01;
-
-
-controls.minDistance =
-    2;
-
-
-controls.maxDistance =
-    30;
 
 
 // ======================================================
@@ -1094,30 +1153,39 @@ function updatePhysics() {
         Date.now() * 0.003;
 
 
-    // Anima lixo
-    trashItems.forEach(
+    // ==========================================
+    // ANIMA O LIXO APENAS NO MODO OCEANO
+    // ==========================================
 
-        (item) => {
+    if (
+        currentMode === 'ocean'
+    ) {
 
-            item.position.y =
+        trashItems.forEach(
 
-                item.userData.initialY +
+            (item) => {
 
-                Math.sin(
+                item.position.y =
 
-                    time +
+                    item.userData.initialY +
 
-                    item.userData.offset
+                    Math.sin(
 
-                ) * 0.05;
+                        time +
+
+                        item.userData.offset
+
+                    ) * 0.05;
 
 
-            item.rotation.y +=
-                0.005;
+                item.rotation.y +=
+                    0.005;
 
-        }
+            }
 
-    );
+        );
+
+    }
 
 
     if (
@@ -1125,7 +1193,13 @@ function updatePhysics() {
     ) return;
 
 
+    // ==========================================
+    // MOVIMENTAÇÃO
+    // ==========================================
+
+
     // A = esquerda
+
     if (
         keysPressed['a']
     ) {
@@ -1137,6 +1211,7 @@ function updatePhysics() {
 
 
     // D = direita
+
     if (
         keysPressed['d']
     ) {
@@ -1148,6 +1223,7 @@ function updatePhysics() {
 
 
     // W = frente
+
     if (
         keysPressed['w']
     ) {
@@ -1160,6 +1236,7 @@ function updatePhysics() {
 
 
     // S = ré
+
     if (
         keysPressed['s']
     ) {
@@ -1172,6 +1249,7 @@ function updatePhysics() {
 
 
     // Q = subir
+
     if (
         keysPressed['q']
     ) {
@@ -1183,6 +1261,7 @@ function updatePhysics() {
 
 
     // E = descer
+
     if (
         keysPressed['e']
     ) {
@@ -1193,8 +1272,13 @@ function updatePhysics() {
     }
 
 
-    // Flutuação
+    // ==========================================
+    // FLUTUAÇÃO APENAS NO OCEANO
+    // ==========================================
+
     if (
+
+        currentMode === 'ocean' &&
 
         !keysPressed['q'] &&
 
@@ -1213,9 +1297,9 @@ function updatePhysics() {
     }
 
 
-    // ==================================================
+    // ==========================================
     // TELEMETRIA
-    // ==================================================
+    // ==========================================
 
     if (
         posX
@@ -1280,7 +1364,10 @@ function updatePhysics() {
     }
 
 
-    // Posição do robô
+    // ==========================================
+    // POSIÇÃO DO ROBÔ
+    // ==========================================
+
     const robotPos =
         new THREE.Vector3();
 
@@ -1290,50 +1377,73 @@ function updatePhysics() {
     );
 
 
-    // Coleta lixo
-    for (
+    // ==========================================
+    // COLETA LIXO APENAS NO OCEANO
+    // ==========================================
 
-        let i =
-            trashItems.length - 1;
-
-        i >= 0;
-
-        i--
-
+    if (
+        currentMode === 'ocean'
     ) {
 
-        const trash =
-            trashItems[i];
+        for (
 
+            let i =
+                trashItems.length - 1;
 
-        const dist =
-            robotPos.distanceTo(
-                trash.position
-            );
+            i >= 0;
 
+            i--
 
-        if (
-            dist < 1.8
         ) {
 
-            scene.remove(
-                trash
-            );
+            const trash =
+                trashItems[i];
 
 
-            trashItems.splice(
-                i,
-                1
-            );
+            const dist =
+                robotPos.distanceTo(
+                    trash.position
+                );
+
+
+            if (
+                dist < 1.8
+            ) {
+
+                scene.remove(
+                    trash
+                );
+
+
+                trashItems.splice(
+                    i,
+                    1
+                );
+
+            }
 
         }
 
     }
 
 
-    // ==================================================
-    // CÂMERA SEGUINDO O ROBÔ
-    // ==================================================
+    // ==========================================
+    // NO MONITORAMENTO A CÂMERA NÃO SEGUE
+    // AUTOMATICAMENTE O ROBÔ
+    // ==========================================
+
+    if (
+        currentMode === 'monitor'
+    ) {
+
+        return;
+
+    }
+
+
+    // ==========================================
+    // CÂMERA SEGUINDO O ROBÔ NO OCEANO
+    // ==========================================
 
     const cameraOffset =
         new THREE.Vector3(
@@ -1445,9 +1555,16 @@ function animate() {
     );
 
 
-    // Anima água
+    // ==========================================
+    // ANIMA ÁGUA APENAS NO MODO OCEANO
+    // ==========================================
+
     if (
-        water
+
+        water &&
+
+        currentMode === 'ocean'
+
     ) {
 
         water.material
@@ -1459,14 +1576,17 @@ function animate() {
 
 
     // Atualiza robô
+
     updatePhysics();
 
 
     // Atualiza controles
+
     controls.update();
 
 
     // Renderiza
+
     renderer.render(
 
         scene,
