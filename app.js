@@ -26,6 +26,9 @@ let robotModel = null;
 
 let baseWaterY = 0.1;
 
+// Grade 3D do monitoramento
+let monitorGrid = null;
+
 const trashItems = [];
 
 
@@ -234,6 +237,11 @@ function setMonitorMode() {
         sky.visible = false;
     }
 
+    // MOSTRA A GRADE 3D
+    if (monitorGrid) {
+        monitorGrid.visible = true;
+    }
+
     trashItems.forEach((trash) => {
         trash.visible = false;
     });
@@ -369,6 +377,11 @@ function setOceanMode() {
 
     if (sky) {
         sky.visible = true;
+    }
+
+    // ESCONDE A GRADE 3D
+    if (monitorGrid) {
+        monitorGrid.visible = false;
     }
 
     trashItems.forEach((trash) => {
@@ -695,6 +708,161 @@ scene.add(
 
 
 // ======================================================
+// GRADE 3D - MONITORAMENTO
+// ======================================================
+
+function createMonitorGrid() {
+
+    monitorGrid =
+        new THREE.Group();
+
+
+    // ==========================================
+    // CHÃO
+    // ==========================================
+
+    const floorGrid =
+        new THREE.GridHelper(
+            100,
+            50,
+            0xff0000,
+            0x550000
+        );
+
+    floorGrid.position.y =
+        -0.01;
+
+
+    monitorGrid.add(
+        floorGrid
+    );
+
+
+    // ==========================================
+    // PAREDE DO FUNDO
+    // ==========================================
+
+    const backGrid =
+        new THREE.GridHelper(
+            100,
+            50,
+            0xff0000,
+            0x550000
+        );
+
+    backGrid.rotation.x =
+        Math.PI / 2;
+
+    backGrid.position.set(
+        0,
+        50,
+        -50
+    );
+
+
+    monitorGrid.add(
+        backGrid
+    );
+
+
+    // ==========================================
+    // PAREDE ESQUERDA
+    // ==========================================
+
+    const leftGrid =
+        new THREE.GridHelper(
+            100,
+            50,
+            0xff0000,
+            0x550000
+        );
+
+    leftGrid.rotation.z =
+        Math.PI / 2;
+
+    leftGrid.position.set(
+        -50,
+        50,
+        0
+    );
+
+
+    monitorGrid.add(
+        leftGrid
+    );
+
+
+    // ==========================================
+    // PAREDE DIREITA
+    // ==========================================
+
+    const rightGrid =
+        new THREE.GridHelper(
+            100,
+            50,
+            0xff0000,
+            0x550000
+        );
+
+    rightGrid.rotation.z =
+        Math.PI / 2;
+
+    rightGrid.position.set(
+        50,
+        50,
+        0
+    );
+
+
+    monitorGrid.add(
+        rightGrid
+    );
+
+
+    // ==========================================
+    // TRANSPARÊNCIA
+    // ==========================================
+
+    monitorGrid.traverse(
+        (object) => {
+
+            if (
+                object.material
+            ) {
+
+                object.material.transparent =
+                    true;
+
+                object.material.opacity =
+                    0.65;
+
+            }
+
+        }
+    );
+
+
+    // ==========================================
+    // COMEÇA ESCONDIDA
+    // ==========================================
+
+    monitorGrid.visible =
+        false;
+
+
+    scene.add(
+        monitorGrid
+    );
+
+}
+
+
+// Cria a grade
+
+createMonitorGrid();
+
+
+// ======================================================
 // LIXO
 // ======================================================
 
@@ -898,9 +1066,7 @@ loader.load(
             gltf.scene;
 
 
-        // ==================================================
-        // CALCULA TAMANHO DO ROBÔ
-        // ==================================================
+        // Calcula tamanho
 
         const box =
             new THREE.Box3()
@@ -918,9 +1084,7 @@ loader.load(
             box.min.y;
 
 
-        // ==================================================
-        // ALTURA NA ÁGUA
-        // ==================================================
+        // Altura na água
 
         baseWaterY =
             -minY +
@@ -938,9 +1102,7 @@ loader.load(
         );
 
 
-        // ==================================================
-        // CONFIGURA MALHAS
-        // ==================================================
+        // Configura malhas
 
         robotModel.traverse(
             (child) => {
@@ -972,77 +1134,14 @@ loader.load(
         );
 
 
-        // ==================================================
-        // 🔴 LINHAS VERMELHAS 3D
-        // ==================================================
-
-        robotModel.traverse(
-            (child) => {
-
-                // Só adiciona linhas em objetos 3D
-                if (
-                    !child.isMesh
-                ) {
-
-                    return;
-
-                }
-
-
-                // Cria as bordas da geometria
-                const edges =
-                    new THREE.EdgesGeometry(
-                        child.geometry,
-                        15
-                    );
-
-
-                // Material das linhas
-                const lineMaterial =
-                    new THREE.LineBasicMaterial({
-
-                        color:
-                            0xff0000,
-
-                        transparent:
-                            true,
-
-                        opacity:
-                            0.9
-
-                    });
-
-
-                // Cria as linhas
-                const edgeLines =
-                    new THREE.LineSegments(
-                        edges,
-                        lineMaterial
-                    );
-
-
-                // Faz as linhas acompanharem
-                // exatamente a peça do robô
-                child.add(
-                    edgeLines
-                );
-
-            }
-        );
-
-
-        // ==================================================
-        // ADICIONA ROBÔ À CENA
-        // ==================================================
-
         scene.add(
             robotModel
         );
 
 
-        // ==================================================
+        // ==========================================
         // CÂMERA INICIAL
-        // ==================================================
+        // ==========================================
 
         const maxDim =
             Math.max(
@@ -1077,9 +1176,9 @@ loader.load(
         controls.update();
 
 
-        // ==================================================
+        // ==========================================
         // FINALIZA LOADING
-        // ==================================================
+        // ==========================================
 
         if (
             loadingScreen
@@ -1105,9 +1204,7 @@ loader.load(
         }
 
 
-        // ==================================================
-        // GARANTE MODO INICIAL OCEANO
-        // ==================================================
+        // Garante que o modo inicial seja Oceano
 
         setOceanMode();
 
