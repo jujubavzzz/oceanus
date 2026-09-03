@@ -898,7 +898,9 @@ loader.load(
             gltf.scene;
 
 
-        // Calcula tamanho
+        // ==================================================
+        // CALCULA TAMANHO DO ROBÔ
+        // ==================================================
 
         const box =
             new THREE.Box3()
@@ -916,7 +918,9 @@ loader.load(
             box.min.y;
 
 
-        // Altura na água
+        // ==================================================
+        // ALTURA NA ÁGUA
+        // ==================================================
 
         baseWaterY =
             -minY +
@@ -934,7 +938,9 @@ loader.load(
         );
 
 
-        // Configura malhas
+        // ==================================================
+        // CONFIGURA MALHAS
+        // ==================================================
 
         robotModel.traverse(
             (child) => {
@@ -966,14 +972,77 @@ loader.load(
         );
 
 
+        // ==================================================
+        // 🔴 LINHAS VERMELHAS 3D
+        // ==================================================
+
+        robotModel.traverse(
+            (child) => {
+
+                // Só adiciona linhas em objetos 3D
+                if (
+                    !child.isMesh
+                ) {
+
+                    return;
+
+                }
+
+
+                // Cria as bordas da geometria
+                const edges =
+                    new THREE.EdgesGeometry(
+                        child.geometry,
+                        15
+                    );
+
+
+                // Material das linhas
+                const lineMaterial =
+                    new THREE.LineBasicMaterial({
+
+                        color:
+                            0xff0000,
+
+                        transparent:
+                            true,
+
+                        opacity:
+                            0.9
+
+                    });
+
+
+                // Cria as linhas
+                const edgeLines =
+                    new THREE.LineSegments(
+                        edges,
+                        lineMaterial
+                    );
+
+
+                // Faz as linhas acompanharem
+                // exatamente a peça do robô
+                child.add(
+                    edgeLines
+                );
+
+            }
+        );
+
+
+        // ==================================================
+        // ADICIONA ROBÔ À CENA
+        // ==================================================
+
         scene.add(
             robotModel
         );
 
 
-        // ==========================================
+        // ==================================================
         // CÂMERA INICIAL
-        // ==========================================
+        // ==================================================
 
         const maxDim =
             Math.max(
@@ -1008,9 +1077,9 @@ loader.load(
         controls.update();
 
 
-        // ==========================================
+        // ==================================================
         // FINALIZA LOADING
-        // ==========================================
+        // ==================================================
 
         if (
             loadingScreen
@@ -1036,7 +1105,9 @@ loader.load(
         }
 
 
-        // Garante que o modo inicial seja Oceano
+        // ==================================================
+        // GARANTE MODO INICIAL OCEANO
+        // ==================================================
 
         setOceanMode();
 
